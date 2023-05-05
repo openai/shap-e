@@ -4,6 +4,7 @@ This is the official code and model release for [Shap-E: Generating Conditional 
 
  * See [Usage](#usage) for guidance on how to use this repository.
  * See [Samples](#samples) for examples of what our text-conditional model can generate.
+ * Try out the web demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/hysts/Shap-E)
 
 # Samples
 
