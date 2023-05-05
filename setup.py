@@ -28,6 +28,7 @@ setup(
         "scikit-image",
         "scipy",
         "numpy",
+        "blobfile",
         "clip @ git+https://github.com/openai/CLIP.git",
     ],
     author="OpenAI",
