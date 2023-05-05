@@ -1,6 +1,6 @@
 # Shap-E
 
-This is the official code and model release for Shap-E.
+This is the official code and model release for [Shap-E: Generating Conditional 3D Implicit Functions](https://arxiv.org/abs/2305.02463).
 
  * See [Usage](#usage) for guidance on how to use this repository.
  * See [Samples](#samples) for examples of what our text-conditional model can generate.
