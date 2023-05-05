@@ -9,6 +9,7 @@ from PIL import Image
 
 from shap_e.models.nn.camera import DifferentiableCameraBatch, DifferentiableProjectiveCamera
 from shap_e.models.transmitter.base import Transmitter, VectorDecoder
+from shap_e.rendering.torch_mesh import TorchMesh
 from shap_e.util.collections import AttrDict
 
 
@@ -58,6 +59,21 @@ def decode_latent_images(
     )
     arr = decoded.channels.clamp(0, 255).to(torch.uint8)[0].cpu().numpy()
     return [Image.fromarray(x) for x in arr]
+
+
+@torch.no_grad()
+def decode_latent_mesh(
+    xm: Union[Transmitter, VectorDecoder],
+    latent: torch.Tensor,
+) -> TorchMesh:
+    decoded = xm.renderer.render_views(
+        AttrDict(cameras=create_pan_cameras(2, latent.device)),  # lowest resolution possible
+        params=(xm.encoder if isinstance(xm, Transmitter) else xm).bottleneck_to_params(
+            latent[None]
+        ),
+        options=AttrDict(rendering_mode="stf", render_with_direction=False),
+    )
+    return decoded.raw_meshes[0]
 
 
 def gif_widget(images):
