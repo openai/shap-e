@@ -141,5 +141,5 @@ def _blender_binary_path() -> str:
 
     raise EnvironmentError(
         "To render 3D models, install Blender version 3.3.1 or higher and "
-        "set the environment variable `BLENDER_PATH' to the path of the Blender executable."
+        "set the environment variable `BLENDER_PATH` to the path of the Blender executable."
     )
