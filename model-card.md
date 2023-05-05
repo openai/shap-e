@@ -28,7 +28,7 @@ The following model checkpoints are available in this repository:
 
 # Paper & Samples
 
-[Paper link](https://openai.com) / [Samples](samples.md)
+[Paper link](https://arxiv.org/abs/2305.02463) / [Samples](samples.md)
 
 # Training data
 
