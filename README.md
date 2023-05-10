@@ -1,3 +1,7 @@
+### Huggingface Live Demo
+[![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-orange)](https://huggingface.co/spaces/hysts/Shap-E)
+
+
 # Shap-E
 
 This is the official code and model release for [Shap-E: Generating Conditional 3D Implicit Functions](https://arxiv.org/abs/2305.02463).
