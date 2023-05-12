@@ -89,6 +89,16 @@ def scene_meshes():
 
 
 def normalize_scene():
+    if len(list(scene_root_objects())) > 1:
+        # Create an empty object to be used as a parent for all root objects
+        parent_empty = bpy.data.objects.new("ParentEmpty", None)
+        bpy.context.scene.collection.objects.link(parent_empty)
+
+        # Parent all root objects to the empty object
+        for obj in scene_root_objects():
+            if obj != parent_empty:
+                obj.parent = parent_empty
+
     bbox_min, bbox_max = scene_bbox()
     scale = 1 / max(bbox_max - bbox_min)
 
