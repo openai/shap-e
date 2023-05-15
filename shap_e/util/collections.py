@@ -1,8 +1,11 @@
 from collections import OrderedDict
 from typing import Any, Callable, Dict, List, Optional
+from typing import OrderedDict, Generic, TypeVar
 
+K = TypeVar('K')
+V = TypeVar('V')
 
-class AttrDict(OrderedDict):
+class AttrDict(OrderedDict[K, V], Generic[K, V]):
     """
     An attribute dictionary that automatically handles nested keys joined by "/".
 
