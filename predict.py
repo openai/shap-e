@@ -11,7 +11,11 @@ from cog import BasePredictor, Input, Path
 from shap_e.diffusion.sample import sample_latents
 from shap_e.diffusion.gaussian_diffusion import diffusion_from_config
 from shap_e.models.download import load_model, load_config
-from shap_e.util.notebooks import create_pan_cameras, decode_latent_images, gif_widget
+from shap_e.util.notebooks import (
+    create_pan_cameras,
+    decode_latent_images,
+    decode_latent_mesh,
+)
 from shap_e.util.image_util import load_image
 
 WEIGHTS_DIR = "model_weights"
@@ -38,7 +42,7 @@ class Predictor(BasePredictor):
             default=None,
         ),
         image: Path = Input(
-            description="An synthetic view image for generating the 3D modeld",
+            description="A synthetic view image for generating the 3D modeld. To get the best result, remove background from the input image",
             default=None,
         ),
         guidance_scale: float = Input(
@@ -51,6 +55,10 @@ class Predictor(BasePredictor):
         render_size: int = Input(
             description="Set the size of the a renderer, higher values take longer to render",
             default=128,
+        ),
+        save_mesh: bool = Input(
+            description="Save the latents as meshes.",
+            default=False,
         ),
     ) -> List[Path]:
         """Run a single prediction on the model"""
@@ -97,8 +105,17 @@ class Predictor(BasePredictor):
             writer.seek(0)
             data = base64.b64encode(writer.read()).decode("ascii")
 
-            filename = "/tmp/out_{i}.gif"
+            filename = f"/tmp/out_{i}.gif"
             with open(filename, "wb") as f:
                 f.write(writer.getbuffer())
             output.append(Path(filename))
+
+        if save_mesh:
+            for i, latent in enumerate(latents):
+                filename = f"/tmp/mesh_{i}.obj"
+                t = decode_latent_mesh(self.xm, latent).tri_mesh()
+                with open(filename, "w") as f:
+                    t.write_obj(f)
+                output.append(Path(filename))
+
         return output
