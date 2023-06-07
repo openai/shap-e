@@ -11,7 +11,7 @@ Shap-E includes two kinds of models: an encoder and a latent diffusion model.
 
 Like [Point-E](https://github.com/openai/point-e/blob/main/model-card.md), Shap-E can often generate coherent 3D objects when conditioned on a rendering from a single viewpoint. When conditioned on text prompts directly, Shap-E is also often capable of producing recognizable objects, although it sometimes struggles to combine multiple objects or concepts.
 
-Samples from Shap-E are typically lower fidelity than professional 3D assets, and often have rough edges, holes, or blurry surface textures.
+Samples from Shap-E are typically lower fidelity than professional 3D assets and often have rough edges, holes, or blurry surface textures.
 
 # Model Date
 
@@ -22,7 +22,7 @@ April 2023
 The following model checkpoints are available in this repository:
 
  * `transmitter` - the encoder and corresponding projection layers for converting encoder outputs into implicit neural representations.
- * `decoder` - just the final projection layer component of `transmitter`. This is a smaller checkpoint than `transmitter`, since it does not include parameters for encoding 3D assets. This is the minimum required model to convert diffusion outputs into implicit neural representations.
+ * `decoder` - just the final projection layer component of `transmitter`. This is a smaller checkpoint than `transmitter` since it does not include parameters for encoding 3D assets. This is the minimum required model to convert diffusion outputs into implicit neural representations.
  * `text300M` - the text-conditional latent diffusion model.
  * `image300M` - the image-conditional latent diffusion model.
 
@@ -51,7 +51,7 @@ Specifically, these models have been evaluated on the following tasks for resear
 
 # Performance & Limitations
 
-Our image-conditional model has only been evaluated on a highly specific distribution of synthetic renderings. Even in these cases, the model still sometimes fails to infer the correct occluded parts of an object, or produces geometry that is inconsistent with the given rendered images. These failure modes are similar to those of Point-E. The resulting 3D assets often have rough edges, holes, or blurry surface textures.
+Our image-conditional model has only been evaluated on a highly specific distribution of synthetic renderings. Even in these cases, the model still sometimes fails to infer the correct occluded parts of an object or produces geometry that is inconsistent with the given rendered images. These failure modes are similar to those of Point-E. The resulting 3D assets often have rough edges, holes, or blurry surface textures.
 
 Our text-conditional model can also produce a somewhat large and diverse vocabulary of objects. This model is often capable of producing objects with requested colors and textures, and sometimes even combining multiple objects. However, it often fails for more complex prompts that require placing multiple objects in a scene or binding attributes to objects. It also typically fails to produce a desired number of objects when a certain quantity is requested.
 
