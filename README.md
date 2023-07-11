@@ -1,3 +1,7 @@
+### Huggingface Live Demo
+[![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-orange)](https://huggingface.co/spaces/hysts/Shap-E)
+
+
 # Shap-E
 
 This is the official code and model release for [Shap-E: Generating Conditional 3D Implicit Functions](https://arxiv.org/abs/2305.02463).
@@ -63,11 +67,19 @@ Here are some highlighted samples from our text-conditional model. For random sa
 <table>
 
 # Usage
-
+clone the repository git clone `https://github.com/openai/shap-e.git`
 Install with `pip install -e .`.
+
+Alternative method: `pip install git+https://github.com/openai/shap-e.git`
 
 To get started with examples, see the following notebooks:
 
+
+* [sample_text_to_3d.ipynb](shap_e/examples/sample_text_to_3d.ipynb) - sample a 3D model, conditioned on a text promp*t
+* [sample_text_to_3d_gradio.ipynb](shap_e/examples/sample_text_to_3d_gradio.ipynb) - sample a 3D model, wrapped around Gradio UI    
+* [sample_image_to_3d.ipynb](shap_e/examples/sample_image_to_3d.ipynb) - sample a 3D model, conditioned on an synthetic view image.
+
 * [sample_text_to_3d.ipynb](shap_e/examples/sample_text_to_3d.ipynb) - sample a 3D model, conditioned on a text prompt.
 * [sample_image_to_3d.ipynb](shap_e/examples/sample_image_to_3d.ipynb) - sample a 3D model, conditioned on a synthetic view image. To get the best result, you should remove background from the input image.
+
 * [encode_model.ipynb](shap_e/examples/encode_model.ipynb) - loads a 3D model or a trimesh, creates a batch of multiview renders and a point cloud, encodes them into a latent, and renders it back. For this to work, install Blender version 3.3.1 or higher, and set the environment variable `BLENDER_PATH` to the path of the Blender executable.
