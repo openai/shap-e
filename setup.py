@@ -1,36 +1,20 @@
-from setuptools import setup
+from setuptools import setup, find_packages
+
+with open("README.md", "r", encoding="utf-8") as f:
+    readme = f.read()
+
+with open("requirements.txt", 'r', encoding='utf-8') as f:
+    requirements = f.read()
 
 setup(
     name="shap-e",
-    packages=[
-        "shap_e",
-        "shap_e.diffusion",
-        "shap_e.models",
-        "shap_e.models.generation",
-        "shap_e.models.nerf",
-        "shap_e.models.nerstf",
-        "shap_e.models.nn",
-        "shap_e.models.stf",
-        "shap_e.models.transmitter",
-        "shap_e.rendering",
-        "shap_e.rendering.blender",
-        "shap_e.rendering.raycast",
-        "shap_e.util",
-    ],
-    install_requires=[
-        "filelock",
-        "Pillow",
-        "torch",
-        "fire",
-        "humanize",
-        "requests",
-        "tqdm",
-        "matplotlib",
-        "scikit-image",
-        "scipy",
-        "numpy",
-        "blobfile",
-        "clip @ git+https://github.com/openai/CLIP.git",
-    ],
     author="OpenAI",
+    install_requires=requirements,
+    license='MIT License',
+    description='This is the official code and model release for Shap-E: Generating Conditional 3D Implicit Functions.',
+    long_description=readme,
+    long_description_content_type="text/markdown",
+    url='https://github.com/openai/shap-e',
+    packages=find_packages(),
+
 )
