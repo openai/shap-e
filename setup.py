@@ -30,6 +30,7 @@ setup(
         "scipy",
         "numpy",
         "blobfile",
+        "pygltflib",
         "clip @ git+https://github.com/openai/CLIP.git",
     ],
     author="OpenAI",

@@ -5,6 +5,7 @@ import blobfile as bf
 import numpy as np
 
 from .ply_util import write_ply
+from .glb_util import write_glb
 
 
 @dataclass
@@ -105,3 +106,15 @@ class TriMesh:
         combined_data = ["v " + vertex for vertex in vertices] + faces
 
         raw_f.writelines("\n".join(combined_data))
+
+    def write_glb(self, raw_f: BinaryIO):
+        write_glb(
+            raw_f,
+            coords=self.verts,
+            rgb=(
+                np.stack([self.vertex_channels[x] for x in "RGB"], axis=1)
+                if self.has_vertex_colors()
+                else None
+            ),
+            faces=self.faces,
+        )
