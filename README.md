@@ -4,6 +4,7 @@ This is the official code and model release for [Shap-E: Generating Conditional 
 
  * See [Usage](#usage) for guidance on how to use this repository.
  * See [Samples](#samples) for examples of what our text-conditional model can generate.
+ * Try web demo and API: [![Replicate](https://replicate.com/cjwbw/shap-e/badge)](https://replicate.com/cjwbw/shap-e) 
 
 # Samples
 
