@@ -44,6 +44,7 @@ def sample_latents(
     s_churn: float,
     device: Optional[torch.device] = None,
     progress: bool = False,
+    initial_latent: torch.Tensor = None,
 ) -> torch.Tensor:
     sample_shape = (batch_size, model.d_latent)
 
@@ -72,6 +73,7 @@ def sample_latents(
                 s_churn=s_churn,
                 guidance_scale=guidance_scale,
                 progress=progress,
+                initial_latent=initial_latent,
             )
         else:
             internal_batch_size = batch_size
@@ -85,6 +87,7 @@ def sample_latents(
                 device=device,
                 clip_denoised=clip_denoised,
                 progress=progress,
+                initial_latent=initial_latent,
             )
 
     return samples

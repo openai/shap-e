@@ -69,7 +69,9 @@ class KarrasDenoiser:
         return terms
 
     def denoise(self, model, x_t, sigmas, **model_kwargs):
-        c_skip, c_out, c_in = [append_dims(x, x_t.ndim) for x in self.get_scalings(sigmas)]
+        c_skip, c_out, c_in = [
+            append_dims(x, x_t.ndim) for x in self.get_scalings(sigmas)
+        ]
         rescaled_t = 1000 * 0.25 * th.log(sigmas + 1e-44)
         model_output = model(c_in * x_t, rescaled_t, **model_kwargs)
         denoised = c_out * model_output + c_skip * x_t
@@ -103,7 +105,11 @@ class GaussianToKarrasDenoiser:
         )
         c_in = append_dims(1.0 / (sigmas**2 + 1) ** 0.5, x_t.ndim)
         out = self.diffusion.p_mean_variance(
-            self.model, x_t * c_in, t, clip_denoised=clip_denoised, model_kwargs=model_kwargs
+            self.model,
+            x_t * c_in,
+            t,
+            clip_denoised=clip_denoised,
+            model_kwargs=model_kwargs,
         )
         return None, out["pred_xstart"]
 
@@ -133,15 +139,25 @@ def karras_sample_progressive(
     s_tmax=float("inf"),
     s_noise=1.0,
     guidance_scale=0.0,
+    initial_latent: th.Tensor = None,
 ):
     sigmas = get_sigmas_karras(steps, sigma_min, sigma_max, rho, device=device)
-    x_T = th.randn(*shape, device=device) * sigma_max
-    sample_fn = {"heun": sample_heun, "dpm": sample_dpm, "ancestral": sample_euler_ancestral}[
-        sampler
-    ]
+    # Enable initialisation of x_T with an embedding, rather than random features.
+    if initial_latent is None:
+        x_T = th.randn(*shape, device=device) * sigma_max
+    else:
+        x_T = initial_latent
+
+    sample_fn = {
+        "heun": sample_heun,
+        "dpm": sample_dpm,
+        "ancestral": sample_euler_ancestral,
+    }[sampler]
 
     if sampler != "ancestral":
-        sampler_args = dict(s_churn=s_churn, s_tmin=s_tmin, s_tmax=s_tmax, s_noise=s_noise)
+        sampler_args = dict(
+            s_churn=s_churn, s_tmin=s_tmin, s_tmax=s_tmax, s_noise=s_noise
+        )
     else:
         sampler_args = {}
 
@@ -208,7 +224,9 @@ def to_d(x, sigma, denoised):
 def get_ancestral_step(sigma_from, sigma_to):
     """Calculates the noise level (sigma_down) to step down to and the amount
     of noise to add (sigma_up) when doing an ancestral sampling step."""
-    sigma_up = (sigma_to**2 * (sigma_from**2 - sigma_to**2) / sigma_from**2) ** 0.5
+    sigma_up = (
+        sigma_to**2 * (sigma_from**2 - sigma_to**2) / sigma_from**2
+    ) ** 0.5
     sigma_down = (sigma_to**2 - sigma_up**2) ** 0.5
     return sigma_down, sigma_up
 
@@ -226,7 +244,13 @@ def sample_euler_ancestral(model, x, sigmas, progress=False):
     for i in indices:
         denoised = model(x, sigmas[i] * s_in)
         sigma_down, sigma_up = get_ancestral_step(sigmas[i], sigmas[i + 1])
-        yield {"x": x, "i": i, "sigma": sigmas[i], "sigma_hat": sigmas[i], "pred_xstart": denoised}
+        yield {
+            "x": x,
+            "i": i,
+            "sigma": sigmas[i],
+            "sigma_hat": sigmas[i],
+            "pred_xstart": denoised,
+        }
         d = to_d(x, sigmas[i], denoised)
         # Euler method
         dt = sigma_down - sigmas[i]
@@ -256,7 +280,9 @@ def sample_heun(
 
     for i in indices:
         gamma = (
-            min(s_churn / (len(sigmas) - 1), 2**0.5 - 1) if s_tmin <= sigmas[i] <= s_tmax else 0.0
+            min(s_churn / (len(sigmas) - 1), 2**0.5 - 1)
+            if s_tmin <= sigmas[i] <= s_tmax
+            else 0.0
         )
         eps = th.randn_like(x) * s_noise
         sigma_hat = sigmas[i] * (gamma + 1)
@@ -264,7 +290,13 @@ def sample_heun(
             x = x + eps * (sigma_hat**2 - sigmas[i] ** 2) ** 0.5
         denoised = denoiser(x, sigma_hat * s_in)
         d = to_d(x, sigma_hat, denoised)
-        yield {"x": x, "i": i, "sigma": sigmas[i], "sigma_hat": sigma_hat, "pred_xstart": denoised}
+        yield {
+            "x": x,
+            "i": i,
+            "sigma": sigmas[i],
+            "sigma_hat": sigma_hat,
+            "pred_xstart": denoised,
+        }
         dt = sigmas[i + 1] - sigma_hat
         if sigmas[i + 1] == 0:
             # Euler method
@@ -300,7 +332,9 @@ def sample_dpm(
 
     for i in indices:
         gamma = (
-            min(s_churn / (len(sigmas) - 1), 2**0.5 - 1) if s_tmin <= sigmas[i] <= s_tmax else 0.0
+            min(s_churn / (len(sigmas) - 1), 2**0.5 - 1)
+            if s_tmin <= sigmas[i] <= s_tmax
+            else 0.0
         )
         eps = th.randn_like(x) * s_noise
         sigma_hat = sigmas[i] * (gamma + 1)
@@ -308,7 +342,13 @@ def sample_dpm(
             x = x + eps * (sigma_hat**2 - sigmas[i] ** 2) ** 0.5
         denoised = denoiser(x, sigma_hat * s_in)
         d = to_d(x, sigma_hat, denoised)
-        yield {"x": x, "i": i, "sigma": sigmas[i], "sigma_hat": sigma_hat, "denoised": denoised}
+        yield {
+            "x": x,
+            "i": i,
+            "sigma": sigmas[i],
+            "sigma_hat": sigma_hat,
+            "denoised": denoised,
+        }
         # Midpoint method, where the midpoint is chosen according to a rho=3 Karras schedule
         sigma_mid = ((sigma_hat ** (1 / 3) + sigmas[i + 1] ** (1 / 3)) / 2) ** 3
         dt_1 = sigma_mid - sigma_hat
@@ -324,7 +364,9 @@ def append_dims(x, target_dims):
     """Appends dimensions to the end of a tensor until it has target_dims dimensions."""
     dims_to_append = target_dims - x.ndim
     if dims_to_append < 0:
-        raise ValueError(f"input has {x.ndim} dims but target_dims is {target_dims}, which is less")
+        raise ValueError(
+            f"input has {x.ndim} dims but target_dims is {target_dims}, which is less"
+        )
     return x[(...,) + (None,) * dims_to_append]
 
 
