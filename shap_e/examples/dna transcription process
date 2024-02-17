@@ -1,0 +1,49 @@
+import pygame
+import sys
+
+# Define colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+# Initialize Pygame
+pygame.init()
+
+# Set screen dimensions
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("3D DNA Transcription Process")
+
+# Main loop
+def main():
+    running = True
+    clock = pygame.time.Clock()
+    
+    while running:
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        
+        # Clear the screen
+        screen.fill(WHITE)
+        
+        # Draw DNA double helix structure
+        # Implement drawing logic here
+        
+        # Draw RNA polymerase
+        # Implement drawing logic here
+        
+        # Draw RNA synthesis process
+        # Implement drawing logic here
+        
+        # Update display
+        pygame.display.flip()
+        
+        # Set frame rate
+        clock.tick(60)
+
+    pygame.quit()
+    sys.exit()
+
+if __name__ == "__main__":
+    main()
