@@ -10,6 +10,8 @@ import numpy as np
 import torch as th
 import yaml
 
+is_mps = th.backends.mps.is_available()
+
 
 def diffusion_from_config(config: Union[str, Dict[str, Any]]) -> "GaussianDiffusion":
     if isinstance(config, str):
@@ -1065,7 +1067,12 @@ def _extract_into_tensor(arr, timesteps, broadcast_shape):
                             dimension equal to the length of timesteps.
     :return: a tensor of shape [batch_size, 1, ...] where the shape has K dims.
     """
-    res = th.from_numpy(arr).to(device=timesteps.device)[timesteps].float()
+    res = None
+    if is_mps:
+        res = th.from_numpy(arr.astype(np.float32)).to(device=timesteps.device)[timesteps].float()
+    else:
+        res = th.from_numpy(arr).to(device=timesteps.device)[timesteps].float()
+
     while len(res.shape) < len(broadcast_shape):
         res = res[..., None]
     return res + th.zeros(broadcast_shape, device=timesteps.device)
