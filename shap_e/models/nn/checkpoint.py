@@ -28,7 +28,7 @@ def checkpoint(
 
 class CheckpointFunction(torch.autograd.Function):
     @staticmethod
-    @custom_fwd
+    @custom_fwd(device_type='cuda')
     def forward(ctx, run_function, length, *args):
         ctx.run_function = run_function
         ctx.length = length
@@ -40,7 +40,7 @@ class CheckpointFunction(torch.autograd.Function):
         return output_tensors
 
     @staticmethod
-    @custom_bwd
+    @custom_bwd(device_type='cuda')
     def backward(ctx, *output_grads):
         inputs = ctx.saved_tensors
         input_tensors = inputs[: ctx.length]
@@ -58,7 +58,7 @@ class CheckpointFunction(torch.autograd.Function):
 
 class CheckpointFunctionGradFunction(torch.autograd.Function):
     @staticmethod
-    @custom_fwd
+    @custom_fwd(device_type='cuda')
     def forward(ctx, run_function, length_1, length_2, *args):
         ctx.run_function = run_function
         ctx.length_1 = length_1
@@ -83,7 +83,7 @@ class CheckpointFunctionGradFunction(torch.autograd.Function):
         return input_grads
 
     @staticmethod
-    @custom_bwd
+    @custom_bwd(device_type='cuda')
     def backward(ctx, *all_output_grads):
         args = ctx.saved_tensors
         input_tensors = [x.detach().requires_grad_(True) for x in args[: ctx.length_1]]
