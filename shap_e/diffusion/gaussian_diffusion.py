@@ -1057,6 +1057,7 @@ class _WrappedModel:
 
 def _extract_into_tensor(arr, timesteps, broadcast_shape):
     """
+    UPDATED to include PyTorch MPS compatibility for Apple Silicon. 
     Extract values from a 1-D numpy array for a batch of indices.
 
     :param arr: the 1-D numpy array.
@@ -1065,7 +1066,16 @@ def _extract_into_tensor(arr, timesteps, broadcast_shape):
                             dimension equal to the length of timesteps.
     :return: a tensor of shape [batch_size, 1, ...] where the shape has K dims.
     """
-    res = th.from_numpy(arr).to(device=timesteps.device)[timesteps].float()
+    res = None
+    is_mps = hasattr(timesteps, "device") and timesteps.device.type == "mps"
+
+    if is_mps:
+        # Create the tensor on the CPU and perform indexing there
+        cpu_tensor = th.from_numpy(arr.copy().astype(np.float32))[timesteps.cpu()].clone().contiguous().float()
+        # Then transfer the result to the target device (e.g., MPS)
+        res = cpu_tensor.to(device=timesteps.device)
+    else:
+        res = th.from_numpy(arr).to(device=timesteps.device)[timesteps].float()
     while len(res.shape) < len(broadcast_shape):
         res = res[..., None]
     return res + th.zeros(broadcast_shape, device=timesteps.device)
