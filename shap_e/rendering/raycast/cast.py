@@ -111,7 +111,7 @@ class RayCollisionFunction(torch.autograd.Function):
     def backward(
         ctx, _collides_grad, ray_dists_grad, _tri_indices_grad, barycentric_grad, normals_grad
     ):
-        origins, directions, faces, vertices = ctx.input_tensors
+        origins, directions, faces, vertices = ctx.saved_tensors
 
         origins = origins.detach().requires_grad_(True)
         directions = directions.detach().requires_grad_(True)
