@@ -17,7 +17,7 @@ Here are some highlighted samples from our text-conditional model. For random sa
             </td>
             <td align="center">
                 <img src="samples/an_airplane_that_looks_like_a_banana/3.gif" alt="An airplane that looks like a banana">
-            </td align="center">
+            </td>
             <td align="center">
                 <img src="samples/a_spaceship/0.gif" alt="A spaceship">
             </td>
